@@ -34,6 +34,7 @@ public class MyDownloadService extends Service {
         }
 
         mDownloadThread.mHandler.setDownloadService(this);
+        mDownloadThread.mHandler.setContext(getApplicationContext());
     }
 
     @Override

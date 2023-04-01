@@ -2,8 +2,12 @@ package com.muhsanjaved.services_practice;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +28,28 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG ="MyTag";
     private ProgressBar progressBar;
     private Handler mHandler;
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String songName = intent.getStringExtra(MESSAGE_KEY);
+            log(songName + " Downloaded....");
+
+            Log.d(TAG, "onReceive: Thread name: "+ Thread.currentThread().getName());
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .registerReceiver(mBroadcastReceiver,new IntentFilter(DownloadHandler.SERVICE_MESSAGE));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
