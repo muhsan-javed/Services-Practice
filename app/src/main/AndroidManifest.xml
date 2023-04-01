@@ -28,6 +28,7 @@
         </activity>
 
         <service android:name=".services.MyDownloadService" />
+        <service android:name=".services.MusicPLayerService" />
     </application>
 
 </manifest>

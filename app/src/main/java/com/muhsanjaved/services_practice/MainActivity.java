@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.ResultReceiver;
 import android.util.Log;
@@ -18,6 +21,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.muhsanjaved.services_practice.services.MusicPLayerService;
 import com.muhsanjaved.services_practice.services.MyDownloadService;
 import com.muhsanjaved.services_practice.services.MyIntentService;
 
@@ -29,12 +33,33 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG ="MyTag";
     private ProgressBar progressBar;
     //private Handler mHandler;
+    private MusicPLayerService mMusicPLayerService;
+    private boolean mBound = false;
+
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder iBinder) {
+
+            MusicPLayerService.MyServiceBinder  myServiceBinder = (MusicPLayerService.MyServiceBinder) iBinder;
+
+            mMusicPLayerService = myServiceBinder.getService();
+            mBound = true;
+            Log.d(TAG, "onServiceConnected: Called");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "onServiceDisconnected: ");
+        }
+    };
+
+
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String songName = intent.getStringExtra(MESSAGE_KEY);
             log(songName + " Downloaded....");
-
             Log.d(TAG, "onReceive: Thread name: "+ Thread.currentThread().getName());
         }
     };
@@ -42,14 +67,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(getApplicationContext())
-                .registerReceiver(mBroadcastReceiver,new IntentFilter(MyIntentService.INTENT_SERVICE_MESSAGE));
+//        LocalBroadcastManager.getInstance(getApplicationContext())
+//                .registerReceiver(mBroadcastReceiver,new IntentFilter(MyIntentService.INTENT_SERVICE_MESSAGE));
+
+        Intent intent= new Intent(MainActivity.this, MusicPLayerService.class);
+        bindService(intent,mServiceConnection,BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
+//        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
+        if (mBound){
+            unbindService(mServiceConnection);
+            mBound = false;
+        }
     }
 
     @Override
@@ -65,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnRunCode.setOnClickListener(v -> {
-            log("Runner code");
+            //log("Runner code");
+            log(mMusicPLayerService.getValue());
             displayProgressBar(true);
 
 //            ResultReceiver resultReceiver = new MyDownloadResultReceiver(null);
