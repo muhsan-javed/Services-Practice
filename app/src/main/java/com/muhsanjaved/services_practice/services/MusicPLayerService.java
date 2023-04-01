@@ -97,13 +97,13 @@ public class MusicPLayerService extends Service {
 
         // Intent for PLay button
         Intent psIntent = new Intent(this,MusicPLayerService.class);
-        pIntent.setAction(Constants.MUSIC_SERVICE_ACTION_PAUSE);
+        psIntent.setAction(Constants.MUSIC_SERVICE_ACTION_PAUSE);
 
         PendingIntent pauseIntent =PendingIntent.getService(this,100,pIntent,0);
 
         // Intent for PLay button
         Intent sIntent = new Intent(this,MusicPLayerService.class);
-        pIntent.setAction(Constants.MUSIC_SERVICE_ACTION_STOP);
+        sIntent.setAction(Constants.MUSIC_SERVICE_ACTION_STOP);
 
         PendingIntent stopIntent =PendingIntent.getService(this,100,pIntent,0);
 
@@ -111,7 +111,7 @@ public class MusicPLayerService extends Service {
                 .setContentText("This is dome music player")
                 .setContentTitle("Music Player")
                 .addAction(new NotificationCompat.Action(android.R.drawable.ic_media_play,"PLay",playIntent))
-                .addAction(new NotificationCompat.Action(android.R.drawable.ic_media_pause,"PLay",pauseIntent))
+                .addAction(new NotificationCompat.Action(android.R.drawable.ic_media_pause,"Pause",pauseIntent))
                 .addAction(new NotificationCompat.Action(android.R.drawable.star_off,"Stop",stopIntent))
         ;
 
