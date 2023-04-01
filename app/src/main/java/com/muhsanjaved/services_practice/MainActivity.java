@@ -21,8 +21,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.muhsanjaved.services_practice.constants.Constants;
 import com.muhsanjaved.services_practice.services.MusicPLayerService;
 import com.muhsanjaved.services_practice.services.MyDownloadService;
+import com.muhsanjaved.services_practice.services.MyForegroundService;
 import com.muhsanjaved.services_practice.services.MyIntentService;
 
 public class MainActivity extends AppCompatActivity {
@@ -108,13 +110,15 @@ public class MainActivity extends AppCompatActivity {
 //            ResultReceiver resultReceiver = new MyDownloadResultReceiver(null);
 
             // Send intent to download service
-         /*   for (String song: PLayList.songs){
+          /*  for (String song: PLayList.songs){
                 Intent intent= new Intent(MainActivity.this, MyIntentService.class);
                 intent.putExtra(MESSAGE_KEY,song);
 //                intent.putExtra(Intent.EXTRA_RESULT_RECEIVER, resultReceiver);
                 startService(intent);
-            }*/
-
+            }
+*/
+            Intent intent= new Intent(MainActivity.this, MyForegroundService.class);
+            startService(intent);
         });
 
 //        mHandler = new Handler();
@@ -126,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     btnPlay.setText("PLay");
                 }else {
                     Intent intent = new Intent(MainActivity.this, MusicPLayerService.class);
+                    intent.setAction(Constants.MUSIC_SERVICE_ACTION_START);
                     startService(intent);
 
                     mMusicPLayerService.play();
