@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.muhsanjaved.services_practice.services.MyDownloadService;
+import com.muhsanjaved.services_practice.services.MyIntentService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     TextView output_text;
     private static final String TAG ="MyTag";
     private ProgressBar progressBar;
-    private Handler mHandler;
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    //private Handler mHandler;
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String songName = intent.getStringExtra(MESSAGE_KEY);
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(getApplicationContext())
-                .registerReceiver(mBroadcastReceiver,new IntentFilter(DownloadHandler.SERVICE_MESSAGE));
+                .registerReceiver(mBroadcastReceiver,new IntentFilter(MyIntentService.INTENT_SERVICE_MESSAGE));
     }
 
     @Override
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Send intent to download service
             for (String song: PLayList.songs){
-                Intent intent= new Intent(MainActivity.this, MyDownloadService.class);
+                Intent intent= new Intent(MainActivity.this, MyIntentService.class);
                 intent.putExtra(MESSAGE_KEY,song);
 //                intent.putExtra(Intent.EXTRA_RESULT_RECEIVER, resultReceiver);
                 startService(intent);
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        mHandler = new Handler();
+//        mHandler = new Handler();
     }
 
     private void scrollTextToEnd() {}

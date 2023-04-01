@@ -27,7 +27,6 @@
                 android:text="Ready to Code !! \n"
                 android:textSize="20sp"
                 android:freezesText="true"
-                android:textColor="@color/black"
                 android:fontFamily="sans-serif"/>
 
 

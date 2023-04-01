@@ -11,6 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ServicesPractice"
         tools:targetApi="31">
+        <service
+            android:name=".services.MyIntentService"
+            android:exported="false">
+
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -21,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.MyDownloadService"/>
+        <service android:name=".services.MyDownloadService" />
     </application>
 
 </manifest>
