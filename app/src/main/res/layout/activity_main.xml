@@ -66,4 +66,16 @@
         android:text="Clear Text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnPlayMusic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Play"
+        app:layout_constraintBottom_toBottomOf="@+id/btnRunCode"
+        app:layout_constraintEnd_toStartOf="@+id/btnClear"
+        app:layout_constraintStart_toEndOf="@+id/btnRunCode"
+        app:layout_constraintTop_toTopOf="@+id/btnRunCode" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,7 +28,7 @@ import com.muhsanjaved.services_practice.services.MyIntentService;
 public class MainActivity extends AppCompatActivity {
 
     public static final String MESSAGE_KEY = "MESSAGE_KEY";
-    Button btnClear, btnRunCode;
+    Button btnClear, btnRunCode,btnPlay;
     TextView output_text;
     private static final String TAG ="MyTag";
     private ProgressBar progressBar;
@@ -58,30 +58,34 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String songName = intent.getStringExtra(MESSAGE_KEY);
-            log(songName + " Downloaded....");
+           // String songName = intent.getStringExtra(MESSAGE_KEY);
+
+//            log(songName + " Downloaded....");
             Log.d(TAG, "onReceive: Thread name: "+ Thread.currentThread().getName());
+            String result = intent.getStringExtra(MESSAGE_KEY);
+            if (result == "done")
+                btnPlay.setText("Play");
         }
     };
 
     @Override
     protected void onStart() {
         super.onStart();
-//        LocalBroadcastManager.getInstance(getApplicationContext())
-//                .registerReceiver(mBroadcastReceiver,new IntentFilter(MyIntentService.INTENT_SERVICE_MESSAGE));
-
         Intent intent= new Intent(MainActivity.this, MusicPLayerService.class);
-        bindService(intent,mServiceConnection,BIND_AUTO_CREATE);
+        bindService(intent,mServiceConnection,Context.BIND_AUTO_CREATE);
+
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .registerReceiver(mBroadcastReceiver,new IntentFilter(MusicPLayerService.MUSIC_COMPLETE));
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
         if (mBound){
             unbindService(mServiceConnection);
             mBound = false;
         }
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
@@ -97,23 +101,38 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnRunCode.setOnClickListener(v -> {
-            //log("Runner code");
-            log(mMusicPLayerService.getValue());
+            log("Playing Music !");
+//            log(mMusicPLayerService.getValue());
             displayProgressBar(true);
 
 //            ResultReceiver resultReceiver = new MyDownloadResultReceiver(null);
 
             // Send intent to download service
-            for (String song: PLayList.songs){
+         /*   for (String song: PLayList.songs){
                 Intent intent= new Intent(MainActivity.this, MyIntentService.class);
                 intent.putExtra(MESSAGE_KEY,song);
 //                intent.putExtra(Intent.EXTRA_RESULT_RECEIVER, resultReceiver);
                 startService(intent);
-            }
+            }*/
 
         });
 
 //        mHandler = new Handler();
+
+        btnPlay.setOnClickListener(v -> {
+            if (mBound){
+                if (mMusicPLayerService.isPlaying()){
+                    mMusicPLayerService.pause();
+                    btnPlay.setText("PLay");
+                }else {
+                    Intent intent = new Intent(MainActivity.this, MusicPLayerService.class);
+                    startService(intent);
+
+                    mMusicPLayerService.play();
+                    btnPlay.setText("Pause");
+                }
+            }
+        });
     }
 
     private void scrollTextToEnd() {}
@@ -133,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         btnRunCode = findViewById(R.id.btnRunCode);
         output_text = findViewById(R.id.output_text);
         progressBar = findViewById(R.id.progressBar);
+        btnPlay = findViewById(R.id.btnPlayMusic);
         //scrollView = findViewById(R.id.scrollViewId);
     }
 
