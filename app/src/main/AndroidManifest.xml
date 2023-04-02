@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,17 +16,24 @@
         android:theme="@style/Theme.ServicesPractice"
         tools:targetApi="31">
         <service
-            android:name=".services.MyForegroundService"
-            android:exported="false">
-
-        </service>
-        <service
-            android:name=".services.MyIntentService"
-            android:exported="false">
-        </service>
+            android:name=".services.MyDownloadJob"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false"/>
 
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".services.MyForegroundService"
+            android:exported="false" />
+        <service
+            android:name=".services.MyIntentService"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.OreoServiceJobSchedularActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
